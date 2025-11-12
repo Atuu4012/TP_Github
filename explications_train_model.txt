@@ -1,0 +1,1 @@
+les modifications sur le fichier train_model.py sont pour ajouter des améliorations sur le train du train_model
