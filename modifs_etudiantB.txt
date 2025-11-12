@@ -1,0 +1,65 @@
+Modifications apportées à `preprocess_data.py`
+--------------------------------------------
+
+Contexte
+-------
+Le fichier `preprocess_data.py` initial contenait une fonction très minimale:
+
+- appel direct à `train_test_split` et retour de `(train, test)`
+
+Objectif
+--------
+Conserver le principe simple du fichier d'origine (séparer en train/test),
+mais rendre la fonction plus robuste et explicite pour éviter des erreurs
+d'utilisation courantes et améliorer la lisibilité / maintenabilité.
+
+Changements réalisés (résumé)
+-----------------------------
+1) Typage et docstring
+	 - Ajout d'annotations de type sur la signature pour clarifier les
+		 paramètres et le retour.
+	 - Ajout d'une docstring en français décrivant le comportement,
+		 les paramètres et le format de sortie.
+
+2) Conversion explicite en DataFrame
+	 - Si l'argument `data` n'est pas un `pandas.DataFrame`, la fonction
+		 tente de le convertir via `pd.DataFrame(data)`.
+	 - Si la conversion échoue, une `TypeError` claire est levée.
+
+3) Validation minimale
+	 - Vérification que le DataFrame n'est pas vide (`data.shape[0] > 0`).
+	 - Si le DataFrame est vide, la fonction lève une `ValueError`.
+
+4) Appel de `train_test_split`
+	 - Le split est effectué avec les paramètres `test_size` et
+		 `random_state` fournis (par défaut `test_size=0.2`).
+	 - Le comportement reste simple et fidèle au principe initial :
+		 on retourne `(train, test)`.
+
+Décisions de conception
+-----------------------
+- J'ai préféré une amélioration ciblée et non intrusive : la fonction reste
+	simple (pas d'imputation/encodage/mise à l'échelle automatique) afin de
+	correspondre à votre demande de garder le principe d'origine mais de
+	rendre le code plus solide.
+- Les décisions plus sophistiquées (préprocesseur complet, pipelines,
+	renvoi de X/y séparés, etc.) peuvent être réintroduites plus tard via
+	un paramètre optionnel si vous le souhaitez.
+
+Exemple d'utilisation
+---------------------
+Exécuté dans un script ou REPL :
+
+from preprocess_data import preprocess_data
+import pandas as pd
+
+df = pd.read_csv("mes_donnees.csv")
+train, test = preprocess_data(df, test_size=0.25, random_state=42)
+
+Notes pour la maintenance
+-------------------------
+- Si vous souhaitez gérer la colonne cible séparément (X/y), je peux
+	adapter la fonction pour retourner `(X_train, X_test, y_train, y_test)`.
+- Si vous voulez réactiver des fonctions avancées (imputation, encodage,
+	scaling), je proposerai une version optionnelle qui reste simple à
+	activer via un paramètre `advanced=True`.
